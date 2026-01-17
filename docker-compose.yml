@@ -74,6 +74,25 @@ services:
       timeout: 10s
       retries: 3
 
+  cicd-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cicd-staging
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Shanghai
+    networks:
+      - cicd
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 volumes:
   jenkins_home:
     driver: local
