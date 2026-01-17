@@ -9,6 +9,9 @@ const ChristmasTree = () => {
   const treeRef = useRef();
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
     // 创建场景
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0a0a1a);
@@ -17,7 +20,7 @@ const ChristmasTree = () => {
     // 创建相机
     const camera = new THREE.PerspectiveCamera(
       75,
-      containerRef.current.clientWidth / containerRef.current.clientHeight,
+      container.clientWidth / container.clientHeight,
       0.1,
       1000
     );
@@ -26,9 +29,9 @@ const ChristmasTree = () => {
 
     // 创建渲染器
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
     // 添加光源
@@ -112,9 +115,9 @@ const ChristmasTree = () => {
 
     // 响应窗口大小变化
     const handleResize = () => {
-      if (containerRef.current) {
-        const width = containerRef.current.clientWidth;
-        const height = containerRef.current.clientHeight;
+      if (container) {
+        const width = container.clientWidth;
+        const height = container.clientHeight;
         
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
@@ -125,14 +128,14 @@ const ChristmasTree = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // 清理函数
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (containerRef.current && renderer.domElement && containerRef.current.contains(renderer.domElement)) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (container && renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
       }
       renderer.dispose();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
